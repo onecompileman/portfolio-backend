@@ -4,7 +4,7 @@ export class BlogCommentResponseDto {
   @ApiProperty()
   id: number;
   @ApiProperty()
-  comment: number;
+  comment: string;
   @ApiProperty()
   name: string;
   @ApiProperty()

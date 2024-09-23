@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiExtraModels,
   ApiOkResponse,
@@ -24,12 +25,27 @@ import { BlogResponseDto } from './dto/blog-response.dto';
 import { InsertBlogDto } from './dto/insert-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { DeleteResult } from 'typeorm';
+import { RichTextParseService } from './rich-text-parse/rich-text-parse.service';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiTags('Blogs')
 @Controller('blogs')
 export class BlogController {
-  constructor(private blogService: BlogService) {}
+  constructor(
+    private blogService: BlogService,
+    private richTextParseService: RichTextParseService,
+  ) {}
 
+  @Public()
+  @ApiPaginationResponse(BlogResponseDto)
+  @Get('/published')
+  findAllPublished(
+    @Query() { skip, limit }: SkipLimitDto,
+  ): Promise<BlogListResponseDto> {
+    return this.blogService.blogFindMany(skip, limit, true);
+  }
+
+  @ApiBearerAuth()
   @ApiExtraModels(BlogResponseDto)
   @ApiPaginationResponse(BlogResponseDto)
   @Get()
@@ -39,34 +55,42 @@ export class BlogController {
     return this.blogService.blogFindMany(skip, limit);
   }
 
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     type: BlogResponseDto,
   })
   @Post()
-  insert(
+  async insert(
     @Body() inserBlogDto: InsertBlogDto,
     @Query('isPublish', ParseBoolPipe) isPublish: boolean,
   ): Promise<BlogResponseDto> {
+    inserBlogDto.content = await this.richTextParseService.handleRichTextUpload(
+      inserBlogDto.content,
+    );
     return this.blogService.insertBlog(inserBlogDto, isPublish);
   }
 
+  @ApiBearerAuth()
   @ApiOkResponse({
     type: BlogResponseDto,
   })
   @Put(':id')
-  updateBlogById(
+  async updateBlogById(
     @Param('id', ParseIntPipe) id: number,
     @Query('isPublish', ParseBoolPipe) isPublish: boolean,
     @Body() updateBlogDto: UpdateBlogDto,
   ): Promise<BlogResponseDto> {
+    updateBlogDto.content =
+      await this.richTextParseService.handleRichTextUpload(
+        updateBlogDto.content,
+      );
     return this.blogService.updateBlog(id, updateBlogDto, isPublish);
   }
 
+  @ApiBearerAuth()
   @ApiOkResponse()
   @Delete(':id')
   deleteBlogById(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
     return this.blogService.deleteById(id);
   }
-
-  publi;
 }

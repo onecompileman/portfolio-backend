@@ -1,6 +1,5 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { BlogComment } from "./Blog-comment.entity";
-import { ApiProperty } from "@nestjs/swagger";
 
 @Entity({
     name: 'blogs'

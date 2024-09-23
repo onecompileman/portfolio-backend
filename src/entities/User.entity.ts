@@ -3,14 +3,12 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  Unique,
 } from 'typeorm';
 
 @Entity({
   name: 'users',
 })
-@Unique(['username'])
-export class User extends BaseEntity {
+export class Users extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

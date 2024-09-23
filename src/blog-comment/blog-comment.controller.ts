@@ -7,7 +7,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { BlogCommentListResponseDto } from './dto/blog-comment-list-response.dto';
 import { BlogCommentResponseDto } from './dto/blog-comment-response.dto';
 import { ApiPaginationResponse } from 'src/decorators/api-pagination-response.decorator';
@@ -19,7 +19,8 @@ import { InsertBlogCommentDto } from './dto/insert-blog-comment.dto';
 @Controller('blog-comment')
 export class BlogCommentController {
   constructor(private blogCommentService: BlogCommentService) {}
-
+  
+  @ApiBearerAuth()
   @ApiExtraModels(BlogCommentResponseDto)
   @ApiPaginationResponse(BlogCommentResponseDto)
   @Get(':blogId')
@@ -30,6 +31,7 @@ export class BlogCommentController {
     return this.blogCommentService.findManyByBlogId(blogId, skip, limit);
   }
 
+  @ApiBearerAuth()
   @ApiCreatedResponse({
     type: BlogCommentResponseDto,
   })

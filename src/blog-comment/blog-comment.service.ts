@@ -45,6 +45,7 @@ export class BlogCommentService {
     }
     const newBlogComment = await this.blogCommentRepository.create({
       ...insertBlogCommentDto,
+      createdAt: new Date(),
       blog,
     });
 

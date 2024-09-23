@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/User.entity';
+import { Users } from 'src/entities/User.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';   
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Users) private userRepository : Repository<Users>,
   ) {}
 
-  async findByUsername(username: string): Promise<User | undefined> {
+  async findByUsername(username: string): Promise<Users | undefined> {
     return this.userRepository.findOneBy({ username });
   }
 

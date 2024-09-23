@@ -11,7 +11,7 @@ export class BlogComment extends BaseEntity {
     id: number;
 
     @Column()
-    comment: number;
+    comment: string;
 
     @Column()
     name: string;
@@ -24,5 +24,5 @@ export class BlogComment extends BaseEntity {
 
     @ManyToOne((type) => Blog, { onDelete: 'SET NULL'})
     @JoinColumn({ name: 'blog_id', referencedColumnName: 'id'})
-    blog: Blog;
+    blog?: Blog;
 }

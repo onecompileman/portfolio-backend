@@ -5,7 +5,7 @@ export class InsertBlogCommentDto {
   @ApiProperty()
   @IsNotEmpty()
   @MinLength(5)
-  comment: number;
+  comment: string;
   @ApiProperty()
   @IsNotEmpty()
   name: string;
