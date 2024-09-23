@@ -4,9 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from './entities/Blog.entity';
 import { BlogComment } from './entities/Blog-comment.entity';
 import { Users } from './entities/User.entity';
+import { ContactInquiry } from './entities/Contact-inquiry.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -14,8 +16,8 @@ import { Users } from './entities/User.entity';
       password: process.env['DB_USER_PASSWORD'],
       database: process.env['DB_NAME'],
       port: +process.env['DB_PORT'],
-      entities: [Blog, BlogComment, Users],
-      synchronize: false,
+      entities: [Blog, BlogComment, Users, ContactInquiry],
+      synchronize: true,
     }),
   ],
   exports: [TypeOrmModule],
