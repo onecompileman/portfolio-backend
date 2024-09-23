@@ -15,6 +15,8 @@ import {
   ApiCreatedResponse,
   ApiExtraModels,
   ApiOkResponse,
+  ApiProperty,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { SkipLimitDto } from './dto/skip-limit.dto';
@@ -62,7 +64,7 @@ export class BlogController {
   @Post()
   async insert(
     @Body() inserBlogDto: InsertBlogDto,
-    @Query('isPublish', ParseBoolPipe) isPublish: boolean,
+    @Query('isPublish', ParseBoolPipe) isPublish?: boolean,
   ): Promise<BlogResponseDto> {
     inserBlogDto.content = await this.richTextParseService.handleRichTextUpload(
       inserBlogDto.content,
@@ -74,11 +76,12 @@ export class BlogController {
   @ApiOkResponse({
     type: BlogResponseDto,
   })
+  @ApiQuery({ name: 'isPublish', required: false })
   @Put(':id')
   async updateBlogById(
     @Param('id', ParseIntPipe) id: number,
-    @Query('isPublish', ParseBoolPipe) isPublish: boolean,
     @Body() updateBlogDto: UpdateBlogDto,
+    @Query('isPublish', ParseBoolPipe) isPublish?: boolean, 
   ): Promise<BlogResponseDto> {
     updateBlogDto.content =
       await this.richTextParseService.handleRichTextUpload(

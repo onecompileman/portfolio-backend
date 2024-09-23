@@ -1,4 +1,4 @@
-function getFileTypeFromBase64(base64String) {
+export function getFileTypeFromBase64(base64String) {
   // Extract the MIME type from the base64 string
   const mimeType = base64String.match(/^data:(.+);base64,/);
 
