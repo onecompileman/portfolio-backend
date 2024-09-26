@@ -12,14 +12,18 @@ import { ConfigModule } from '@nestjs/config';
       useFactory: () => {
         const firebaseConfig = {
           projectId: process.env['FIREBASE_PROJECT_ID'],
+          privateKey: process.env['FIREBASE_PRIVATE_KEY'].replace(
+            /\\n/g,
+            '\n',
+          ), // Ensure newlines are replaced correctly
           clientEmail: process.env['FIREBASE_CLIENT_EMAIL'],
-          privateKey: process.env['FIREBASE_PRIVATE_KEY'].replace(/\\n/g, '\n'), // handle line breaks
-          storageBucket: process.env['FIREBASE_STORAGE_BUCKET'],
         };
 
+        console.log(firebaseConfig)
+
         return admin.initializeApp({
-          credential: admin.credential.cert(firebaseConfig),
-          storageBucket: firebaseConfig.storageBucket,
+          credential: admin.credential.cert(firebaseConfig ),
+          storageBucket: process.env['FIREBASE_STORAGE_BUCKET'],
         });
       },
     },

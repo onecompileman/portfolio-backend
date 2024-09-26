@@ -12,7 +12,7 @@ import { BlogCommentListResponseDto } from './dto/blog-comment-list-response.dto
 import { BlogCommentResponseDto } from './dto/blog-comment-response.dto';
 import { ApiPaginationResponse } from 'src/decorators/api-pagination-response.decorator';
 import { BlogCommentService } from './blog-comment.service';
-import { SkipLimitDto } from 'src/blog/dto/skip-limit.dto';
+import { SkipLimitQueryDto } from 'src/blog/dto/skip-limit-query.dto';
 import { InsertBlogCommentDto } from './dto/insert-blog-comment.dto';
 
 @ApiTags('BlogComment')
@@ -26,7 +26,7 @@ export class BlogCommentController {
   @Get(':blogId')
   findAllByBlogId(
     @Param('blogId', ParseIntPipe) blogId: number,
-    @Query() { skip, limit }: SkipLimitDto,
+    @Query() { skip, limit }: SkipLimitQueryDto,
   ): Promise<BlogCommentListResponseDto> {
     return this.blogCommentService.findManyByBlogId(blogId, skip, limit);
   }

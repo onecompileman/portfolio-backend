@@ -15,24 +15,25 @@ export class RichTextParseService {
 
     const images = $('img');
 
-    for (let i = 0; i < images.length; i++) {
-      const src = $(images[i]).attr('src');
-      if (src && src.startsWith('data:')) {
-        const fileType = getFileTypeFromBase64(src);
-        const fileExtension = getFileExtensionFromBase64(src);
+    return '';
+    // for (let i = 0; i < images.length; i++) {
+    //   const src = $(images[i]).attr('src');
+    //   if (src && src.startsWith('data:')) {
+    //     const fileType = getFileTypeFromBase64(src);
+    //     const fileExtension = getFileExtensionFromBase64(src);
 
-        const blob = base64ToBlob(src, fileType);
-        const fileToUpload = new File(
-          [blob],
-          `blog-${uuidv4()}.${fileExtension}`,
-          { type: fileType },
-        );
-        const imageUrl =
-          await this.firebaseStorageService.uploadFile(fileToUpload);
-        $(images[i]).attr('src', imageUrl);
-      }
-    }
+    //     const blob = base64ToBlob(src, fileType);
+    //     const fileToUpload = new File(
+    //       [blob],
+    //       `blog-${uuidv4()}.${fileExtension}`,
+    //       { type: fileType },
+    //     );
+    //     const imageUrl =
+    //       await this.firebaseStorageService.uploadFile(fileToUpload);
+    //     $(images[i]).attr('src', imageUrl);
+    //   }
+    // }
 
-    return $.html();
+    // return $.html();
   }
 }

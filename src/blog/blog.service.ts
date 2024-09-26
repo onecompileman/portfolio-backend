@@ -2,11 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from 'src/entities/Blog.entity';
 import { ResponseBodyList } from 'src/models/response-body-list.model';
-import { DeleteResult, IsNull, Not, Repository } from 'typeorm';
+import { DeleteResult, IsNull, Like, Not, Repository } from 'typeorm';
 import { BlogListResponseDto } from './dto/blog-list-response.dto';
 import { InsertBlogDto } from './dto/insert-blog.dto';
 import { BlogResponseDto } from './dto/blog-response.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { BlogTagsResponseDto } from './dto/blog-tags-response.dto';
 
 @Injectable()
 export class BlogService {
@@ -17,14 +18,28 @@ export class BlogService {
   async blogFindMany(
     skip: number = 0,
     limit: number = 10,
+    query: string = '',
+    tags: string = '',
     isPublished: boolean = false,
   ): Promise<BlogListResponseDto> {
+    const whereClause: any = {};
+    if (query) {
+      whereClause.content = whereClause.title = Like(`%${query}%`);
+    }
+
+    if (tags) {
+      whereClause.tags = tags;
+    }
+
+    if (isPublished) {
+      whereClause.publishDate = Not(IsNull());
+    }
     const [result, total] = await this.blogRepository.findAndCount({
-      where: isPublished ? { publishDate: Not(IsNull()) } : null,
+      where: whereClause,
       take: limit,
       skip,
     });
-    console.log(result);
+
     return {
       limit,
       skip,
@@ -49,6 +64,17 @@ export class BlogService {
 
   findOne(id: number): Promise<BlogResponseDto> {
     return this.blogRepository.findOneBy({ id });
+  }
+
+  async getBlogTags(): Promise<BlogTagsResponseDto> {
+    const blogs = await this.blogRepository
+      .createQueryBuilder('blog')
+      .select('blog.tags')
+      .getMany();
+
+    const allTags = blogs.map((blog) => blog.tags).filter((tag) => tag);
+
+    return { tags: Array.from(new Set(allTags)) };
   }
 
   async updateBlog(

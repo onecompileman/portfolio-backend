@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class SkipLimitDto {
+export class SkipLimitQueryDto {
     @ApiProperty({
         required: false,
     })
@@ -10,4 +10,14 @@ export class SkipLimitDto {
         required: false
     })
     limit: number;
+
+    @ApiProperty({
+        required: false
+    })
+    query: string;
+    
+    @ApiProperty({
+        required: false
+    })
+    tags: string;
 }

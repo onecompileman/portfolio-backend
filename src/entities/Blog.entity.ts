@@ -17,7 +17,13 @@ export class Blog extends BaseEntity {
     title: string;
 
     @Column()
+    imageHeaderUrl: string;
+
+    @Column()
     tags: string;
+
+    @Column()
+    tagClass: string;
 
     @Column({
         type: 'text'

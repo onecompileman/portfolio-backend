@@ -13,13 +13,13 @@ export class FirebaseStorageService {
     this.bucket = this.firebaseApp.storage().bucket();
   }
 
-  async uploadFile(file: File): Promise<string> {
-    const fileName = `${uuidv4()}-${file.name}`;
+  async uploadFile(file: Express.Multer.File): Promise<string> {
+    const fileName = `${uuidv4()}-${file.originalname}`;
     const fileUpload = this.bucket.file(fileName);
 
     const blobStream = fileUpload.createWriteStream({
       metadata: {
-        contentType: file.type,
+        contentType: file.mimetype,
       },
     });
 
@@ -33,7 +33,7 @@ export class FirebaseStorageService {
         resolve(publicUrl); // Return the public URL of the file
       });
 
-      blobStream.end(file.arrayBuffer);
+      blobStream.end(file.buffer);
     });
   }
 }

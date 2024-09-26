@@ -4,7 +4,7 @@ import { ContactInquiryService } from './contact-inquiry.service';
 import { ApiPaginationResponse } from 'src/decorators/api-pagination-response.decorator';
 import { ContactInquiryResponseDto } from './dto/contact-inquiry-response.dto';
 import { Public } from 'src/decorators/public.decorator';
-import { SkipLimitDto } from 'src/blog/dto/skip-limit.dto';
+import { SkipLimitQueryDto } from 'src/blog/dto/skip-limit-query.dto';
 import { ContactInquiryListDto } from './dto/contact-inquiry-list.dto';
 import { InsertContactInquiryDto } from './dto/insert-contact-inquiry.dto';
 
@@ -20,7 +20,7 @@ export class ContactInquiryController {
     @ApiPaginationResponse(ContactInquiryResponseDto)
     @Public()
     @Get()
-    findAll(@Query() {skip, limit}: SkipLimitDto): Promise<ContactInquiryListDto> {
+    findAll(@Query() {skip, limit}: SkipLimitQueryDto): Promise<ContactInquiryListDto> {
         return this.contactInquiryService.findAll(skip, limit);
     }
 

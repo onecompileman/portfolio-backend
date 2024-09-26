@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, MinLength } from 'class-validator';
+import { IsNotEmpty, IsUrl, MinLength } from 'class-validator';
 
 export class InsertBlogDto {
   @ApiProperty()
@@ -8,7 +8,16 @@ export class InsertBlogDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsUrl()
+  imageHeaderUrl: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
   tags: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  tagClass: string;
 
   @ApiProperty()
   @IsNotEmpty()
