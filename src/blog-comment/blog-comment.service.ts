@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlogComment } from 'src/entities/Blog-comment.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { BlogCommentListResponseDto } from './dto/blog-comment-list-response.dto';
 import { InsertBlogCommentDto } from './dto/insert-blog-comment.dto';
 import { BlogCommentResponseDto } from './dto/blog-comment-response.dto';
@@ -50,5 +50,9 @@ export class BlogCommentService {
     });
 
     return this.blogCommentRepository.save(newBlogComment);
+  }
+
+  deleteById(id: number): Promise<DeleteResult> {
+    return this.blogCommentRepository.delete({ id });
   }
 }

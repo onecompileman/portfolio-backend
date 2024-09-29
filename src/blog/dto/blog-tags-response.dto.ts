@@ -1,3 +1,3 @@
 export class BlogTagsResponseDto {
-    tags: string[];
+    tags: { tags: string, class: string, count: number }[];
 }

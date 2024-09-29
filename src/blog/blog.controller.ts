@@ -35,6 +35,7 @@ import { BlogFileUploadResponseDto } from './dto/blog-file-upload-response.dto';
 import { FirebaseStorageService } from 'src/firebase-admin/firebase-storage.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter } from 'src/common/utils/image-file-filter.util';
+import { BlogTagsResponseDto } from './dto/blog-tags-response.dto';
 
 @ApiTags('Blogs')
 @Controller('blogs')
@@ -50,6 +51,7 @@ export class BlogController {
   findAllPublished(
     @Query() { skip, limit, query, tags }: SkipLimitQueryDto,
   ): Promise<BlogListResponseDto> {
+    console.log('here ' + tags)
     return this.blogService.blogFindMany(skip, limit, query, tags, true);
   }
 
@@ -90,10 +92,15 @@ export class BlogController {
     @Body() inserBlogDto: InsertBlogDto,
     @Query('isPublish', ParseBoolPipe) isPublish?: boolean,
   ): Promise<BlogResponseDto> {
-    // inserBlogDto.content = await this.richTextParseService.handleRichTextUpload(
-    //   inserBlogDto.content,
-    // );
     return this.blogService.insertBlog(inserBlogDto, isPublish);
+  }
+
+  @Public()
+  @ApiOkResponse()
+  @Get('tags')
+  getBlogTags(): Promise<BlogTagsResponseDto> {
+    console.log('here')
+    return this.blogService.getBlogTags();
   }
 
   @ApiBearerAuth()
@@ -107,10 +114,6 @@ export class BlogController {
     @Body() updateBlogDto: UpdateBlogDto,
     @Query('isPublish', ParseBoolPipe) isPublish?: boolean,
   ): Promise<BlogResponseDto> {
-    // updateBlogDto.content =
-    //   await this.richTextParseService.handleRichTextUpload(
-    //     updateBlogDto.content,
-    //   );
     return this.blogService.updateBlog(id, updateBlogDto, isPublish);
   }
 
@@ -120,4 +123,23 @@ export class BlogController {
   deleteBlogById(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
     return this.blogService.deleteById(id);
   }
+
+  @Public()
+  @ApiOkResponse()
+  @Get(':id')
+  getBlogById(@Param('id', ParseIntPipe) id: number): Promise<BlogResponseDto> {
+    return this.blogService.findOne(id);
+  }
+
+  @Public()
+  @ApiOkResponse()
+  @Get(':id/view')
+  async viewBlogById(@Param('id', ParseIntPipe) id: number): Promise<BlogResponseDto> {
+    const blog = await this.blogService.findOne(id);
+
+    blog.views = blog.views + 1;
+
+    return this.blogService.updateBlog(id, blog, true);
+  }
+
 }

@@ -15,7 +15,10 @@ export class ContactInquiry extends BaseEntity {
     @Column()
     email: string;
 
-    @Column()
+    @Column({
+        nullable: true,
+        default: ''
+    })
     subject: string;
 
     @Column()

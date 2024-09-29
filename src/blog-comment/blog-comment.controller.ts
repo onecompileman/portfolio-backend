@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -14,13 +15,15 @@ import { ApiPaginationResponse } from 'src/decorators/api-pagination-response.de
 import { BlogCommentService } from './blog-comment.service';
 import { SkipLimitQueryDto } from 'src/blog/dto/skip-limit-query.dto';
 import { InsertBlogCommentDto } from './dto/insert-blog-comment.dto';
+import { Public } from 'src/decorators/public.decorator';
+import { DeleteResult } from 'typeorm';
 
 @ApiTags('BlogComment')
 @Controller('blog-comment')
 export class BlogCommentController {
   constructor(private blogCommentService: BlogCommentService) {}
   
-  @ApiBearerAuth()
+  @Public()
   @ApiExtraModels(BlogCommentResponseDto)
   @ApiPaginationResponse(BlogCommentResponseDto)
   @Get(':blogId')
@@ -31,6 +34,7 @@ export class BlogCommentController {
     return this.blogCommentService.findManyByBlogId(blogId, skip, limit);
   }
 
+  @Public()
   @ApiBearerAuth()
   @ApiCreatedResponse({
     type: BlogCommentResponseDto,
@@ -40,5 +44,16 @@ export class BlogCommentController {
     @Body() insertBlogCommentDto: InsertBlogCommentDto,
   ): Promise<BlogCommentResponseDto> {
     return this.blogCommentService.insertBlogComment(insertBlogCommentDto);
+  }
+
+  @ApiBearerAuth()
+  @ApiCreatedResponse({
+    type: BlogCommentResponseDto,
+  })
+  @Delete(':id')
+  deleteBlogComment(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DeleteResult> {
+    return this.blogCommentService.deleteById(id);
   }
 }

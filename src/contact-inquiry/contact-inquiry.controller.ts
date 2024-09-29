@@ -18,10 +18,9 @@ export class ContactInquiryController {
 
     @ApiExtraModels(ContactInquiryResponseDto)
     @ApiPaginationResponse(ContactInquiryResponseDto)
-    @Public()
     @Get()
-    findAll(@Query() {skip, limit}: SkipLimitQueryDto): Promise<ContactInquiryListDto> {
-        return this.contactInquiryService.findAll(skip, limit);
+    findAll(@Query() {skip, limit, query}: SkipLimitQueryDto): Promise<ContactInquiryListDto> {
+        return this.contactInquiryService.findAll(skip, limit, query);
     }
 
     @ApiPaginationResponse(ContactInquiryResponseDto)

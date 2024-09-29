@@ -11,8 +11,9 @@ export class InsertContactInquiryDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({
+    required: false
+  })
   subject: string;
 
   @ApiProperty()

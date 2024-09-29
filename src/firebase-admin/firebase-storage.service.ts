@@ -29,7 +29,7 @@ export class FirebaseStorageService {
       );
 
       blobStream.on('finish', async () => {
-        const publicUrl = `https://storage.googleapis.com/${this.bucket.name}/${fileName}`;
+        const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${this.bucket.name}/o/${fileName}?alt=media`;
         resolve(publicUrl); // Return the public URL of the file
       });
 

@@ -14,6 +14,10 @@ export class Newsletter extends BaseEntity {
     })
     email: string;
 
+    @Column({
+        nullable: true
+    })
+    unsubscribe: boolean;
 
     @Column()
     createdAt: Date;

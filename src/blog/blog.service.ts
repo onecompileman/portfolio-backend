@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from 'src/entities/Blog.entity';
-import { ResponseBodyList } from 'src/models/response-body-list.model';
-import { DeleteResult, IsNull, Like, Not, Repository } from 'typeorm';
+import { DeleteResult, IsNull, ILike, Not, Repository } from 'typeorm';
 import { BlogListResponseDto } from './dto/blog-list-response.dto';
 import { InsertBlogDto } from './dto/insert-blog.dto';
 import { BlogResponseDto } from './dto/blog-response.dto';
@@ -23,8 +22,11 @@ export class BlogService {
     isPublished: boolean = false,
   ): Promise<BlogListResponseDto> {
     const whereClause: any = {};
+
+    console.log(tags);
     if (query) {
-      whereClause.content = whereClause.title = Like(`%${query}%`);
+    
+      whereClause.title = ILike(`%${query}%`);
     }
 
     if (tags) {
@@ -34,11 +36,15 @@ export class BlogService {
     if (isPublished) {
       whereClause.publishDate = Not(IsNull());
     }
+
+    console.log(whereClause)
     const [result, total] = await this.blogRepository.findAndCount({
       where: whereClause,
       take: limit,
       skip,
     });
+
+
 
     return {
       limit,
@@ -69,12 +75,22 @@ export class BlogService {
   async getBlogTags(): Promise<BlogTagsResponseDto> {
     const blogs = await this.blogRepository
       .createQueryBuilder('blog')
-      .select('blog.tags')
+      .select('blog')
+      .where({
+        publishDate: Not(IsNull()),
+      })
       .getMany();
 
     const allTags = blogs.map((blog) => blog.tags).filter((tag) => tag);
+    console.log(blogs)
 
-    return { tags: Array.from(new Set(allTags)) };
+    return {
+      tags: Array.from(new Set(allTags)).map((tags) => ({
+        class: blogs.find((blog) => blog.tags === tags)?.tagClass,
+        count: blogs.filter((blog) => blog.tags === tags).length,
+        tags,
+      })),
+    };
   }
 
   async updateBlog(
@@ -88,13 +104,10 @@ export class BlogService {
       throw new HttpException('Blog to update not found', HttpStatus.NOT_FOUND);
     }
 
-    if (isPublish) {
-      existingBlog.publishDate = new Date();
-    }
-
     return this.blogRepository.save({
       ...existingBlog,
       ...blog,
+      publishDate: isPublish ? new Date() : null,
       updatedAt: new Date(),
     });
   }

@@ -12,7 +12,7 @@ import { Newsletter } from './entities/Newsletter.entity';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: process.env['DB_HOST'],
       username: process.env['DB_USER_NAME'],
       password: process.env['DB_USER_PASSWORD'],
       database: process.env['DB_NAME'],
