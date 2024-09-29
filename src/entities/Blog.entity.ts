@@ -4,7 +4,6 @@ import { BlogComment } from "./Blog-comment.entity";
 @Entity({
     name: 'blogs'
 })
-@Unique(["title"])
 export class Blog extends BaseEntity {
     @PrimaryGeneratedColumn({
         type: 'bigint'
