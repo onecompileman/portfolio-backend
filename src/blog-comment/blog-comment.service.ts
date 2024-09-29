@@ -23,6 +23,9 @@ export class BlogCommentService {
   ): Promise<BlogCommentListResponseDto> {
     const [result, total] = await this.blogCommentRepository.findAndCount({
       where: { blog: { id: blogId } },
+      order: {
+        createdAt: 'DESC'
+      },
       take: limit,
       skip,
     });

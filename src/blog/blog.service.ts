@@ -40,6 +40,9 @@ export class BlogService {
     console.log(whereClause)
     const [result, total] = await this.blogRepository.findAndCount({
       where: whereClause,
+      order: {
+        publishDate: 'DESC'
+      },
       take: limit,
       skip,
     });

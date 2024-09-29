@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as process from 'process';
+import * as basicAuth from 'express-basic-auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,11 +11,19 @@ async function bootstrap() {
     origin: '*', // Allow all origins
   });
 
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true, // Enable transformation
-    whitelist: true, // Automatically strip properties not in the DTO
-  }));
-
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, // Enable transformation
+      whitelist: true, // Automatically strip properties not in the DTO
+    }),
+  );
+  app.use(
+    ['/api-docs'],
+    basicAuth({
+      users: { [process.env['SWAGGER_USER']]: process.env['SWAGGER_PASSWORD'] }, // Username: admin, Password: password123
+      challenge: true,
+    }),
+  );
   const config = new DocumentBuilder()
     .setTitle('StephenVinuya - Portfolio API')
     .setDescription('The portfolio api')
